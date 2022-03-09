@@ -58,7 +58,8 @@ class MyHomePage extends StatelessWidget {
                         itemBuilder: (context, index) {
                           return InkWell(
                             onTap: () {
-                              context.read<UserProvider>().changeUserId(index);
+                              context.read<UserProvider>().changeUserId(
+                                  users[index].id!, users[index].name!);
                             },
                             child: Column(
                               children: [
@@ -99,7 +100,7 @@ class MyHomePage extends StatelessWidget {
                   vertical: getHeight(8.0),
                 ),
                 child: FutureBuilder<List<PostModel>>(
-                  future: PostsService.fetchUser(),
+                  future: PostsService.fetchPost(),
                   builder: ((context, AsyncSnapshot<List<PostModel>> snapshot) {
                     if (!snapshot.hasData) {
                       return const Center(
@@ -111,21 +112,18 @@ class MyHomePage extends StatelessWidget {
                       );
                     } else {
                       List<PostModel> userPosts = snapshot.data!
-                          .where((element) => element.userId == context.watch<UserProvider>().userId)
+                          .where((element) =>
+                              element.userId ==
+                              context.watch<UserProvider>().userId)
                           .toList();
                       return ListView.builder(
                         itemCount: userPosts.length,
                         key: UniqueKey(),
                         itemBuilder: (context, index) {
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamed(context, "/posts_list_page");
-                            },
-                            child: Article(
-                              userId: userPosts[index].userId!,
-                              title: userPosts[index].title!,
-                              body: userPosts[index].body!,
-                            ),
+                          return Article(
+                            userId: userPosts[index].userId!,
+                            title: userPosts[index].title!,
+                            postID: userPosts[index].id!,
                           );
                         },
                       );

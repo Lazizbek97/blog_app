@@ -1,19 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:work_task/core/utils/size_config.dart';
+import 'package:work_task/screens/providers/post_provider.dart';
+import 'package:work_task/screens/providers/user_provider.dart';
 
 class Article extends StatelessWidget {
-  Article(
-      {required this.userId, required this.title, required this.body, Key? key})
+  Article({required this.userId, required this.title, required this.postID, Key? key})
       : super(key: key);
 
+  int postID;
   int userId;
   String title;
-  String body;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => Navigator.pushNamed(context, "/writers_posts"),
+      onTap: () async {
+        await context.read<PostProvider>().getPost(postID);
+        await context
+            .read<UserProvider>()
+            .getCurUser()
+            .then((value) => Navigator.pushNamed(
+                  context,
+                  "/writers_posts",
+                ));
+      },
       child: SizedBox(
         height: getHeight(160),
         child: Row(
@@ -42,8 +53,8 @@ class Article extends StatelessWidget {
                       title,
                       style: TextStyle(
                           fontSize: getHeight(16), fontWeight: FontWeight.w600),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
                     ),
                     Row(
                       children: [

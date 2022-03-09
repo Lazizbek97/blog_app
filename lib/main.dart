@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:work_task/core/utils/main_theme.dart';
 import 'package:work_task/core/utils/router.dart';
+import 'package:work_task/screens/providers/comments_provider.dart';
+import 'package:work_task/screens/providers/post_provider.dart';
 import 'package:work_task/screens/providers/user_provider.dart';
 
 void main() {
@@ -16,6 +18,8 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => PostProvider()),
+        ChangeNotifierProvider(create: (_) => CommentsProvider()),
       ],
       child: MaterialApp(
         title: 'Blog App',

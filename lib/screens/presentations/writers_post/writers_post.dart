@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:work_task/core/utils/constants.dart';
 import 'package:work_task/core/utils/size_config.dart';
+import 'package:work_task/screens/presentations/writers_post/components/bottom_sheet.dart';
+import 'package:work_task/screens/providers/comments_provider.dart';
+import 'package:work_task/screens/providers/post_provider.dart';
+import 'package:work_task/screens/providers/user_provider.dart';
 
 class Writers_posts extends StatelessWidget {
   const Writers_posts({Key? key}) : super(key: key);
@@ -38,26 +43,31 @@ class Writers_posts extends StatelessWidget {
                         style: TextStyle(color: Colors.grey),
                       ),
                       TextSpan(
-                          text: "Author name",
-                          style: TextStyle(
-                              fontSize: getHeight(16),
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black)),
+                        text: context.watch<UserProvider>().curUser!.name,
+                        style: TextStyle(
+                            fontSize: getHeight(16),
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black),
+                      ),
                     ],
                   ),
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(bottom: getHeight(45)),
+                padding: EdgeInsets.only(bottom: getHeight(65)),
                 child: Column(
                   children: [
                     Text(
-                      "How to become master in color palette",
+                      context.watch<PostProvider>().post!.title.toString(),
                       style: TextStyle(
                           fontSize: getHeight(22), fontWeight: FontWeight.w600),
                     ),
+                    Text(
+                      context.watch<PostProvider>().post!.body.toString(),
+                      textAlign: TextAlign.justify,
+                    ),
                     const Text(
-                      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum, Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
+                      "\nLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum, Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
                       textAlign: TextAlign.justify,
                     ),
                   ],
@@ -68,18 +78,23 @@ class Writers_posts extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          showModalBottomSheet(
-              context: context,
-              backgroundColor: Colors.white,
-              isDismissible: true,
-              isScrollControlled: true,
-              shape: const RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.vertical(top: Radius.circular(25))),
-              builder: (context) {
-                return const CommentsBottomSheet();
-              });
+        onPressed: () async {
+          await context
+              .read<CommentsProvider>()
+              .getComments(
+                  Provider.of<PostProvider>(context, listen: false).post!.id!)
+              .then((value) => showModalBottomSheet(
+                    context: context,
+                    backgroundColor: Colors.white,
+                    isDismissible: true,
+                    isScrollControlled: true,
+                    shape: const RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(25))),
+                    builder: (context) {
+                      return const CommentsBottomSheet();
+                    },
+                  ));
         },
         backgroundColor: Colors.white,
         label: const Text(
@@ -92,67 +107,6 @@ class Writers_posts extends StatelessWidget {
             color: Colors.white,
           ),
           backgroundColor: Colors.black,
-        ),
-      ),
-    );
-  }
-}
-
-class CommentsBottomSheet extends StatelessWidget {
-  const CommentsBottomSheet({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: getWidth(20)),
-      child: SizedBox(
-        height: getHeight(600),
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: getHeight(10)),
-              child: TextFormField(
-                maxLines: 2,
-                decoration: InputDecoration(
-                  hintText: "Add comments here ...",
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-              ),
-            ),
-            Expanded(
-              child: ListView.separated(
-                itemCount: 10,
-                separatorBuilder: (context, i) => const Divider(),
-                physics: const ScrollPhysics(),
-                itemBuilder: (context, index) {
-                  return Column(
-                    children: [
-                      ListTile(
-                        leading: const CircleAvatar(
-                          backgroundImage: NetworkImage(
-                              "https://source.unsplash.com/random"),
-                        ),
-                        title: const Text("Comment's owner name"),
-                        subtitle: const Text("1 hrs ago"),
-                        trailing: IconButton(
-                            onPressed: () {},
-                            icon: const Icon(Icons.favorite_border)),
-                      ),
-                      const Text(
-                          "You always give good advice. What would you say someone"),
-                    ],
-                  );
-                },
-              ),
-            ),
-          ],
         ),
       ),
     );
