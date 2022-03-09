@@ -66,6 +66,7 @@ class Writers_posts extends StatelessWidget {
                       context.watch<PostProvider>().post!.body.toString(),
                       textAlign: TextAlign.justify,
                     ),
+                    // ? Added Lorem Ipsum Text so that it looks  like more real post
                     const Text(
                       "\nLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum, Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
                       textAlign: TextAlign.justify,
@@ -79,22 +80,27 @@ class Writers_posts extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
+
+          // ? gets this post's comments and save it to provider
+          
           await context
               .read<CommentsProvider>()
               .getComments(
                   Provider.of<PostProvider>(context, listen: false).post!.id!)
-              .then((value) => showModalBottomSheet(
-                    context: context,
-                    backgroundColor: Colors.white,
-                    isDismissible: true,
-                    isScrollControlled: true,
-                    shape: const RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.vertical(top: Radius.circular(25))),
-                    builder: (context) {
-                      return const CommentsBottomSheet();
-                    },
-                  ));
+              .then(
+                (value) => showModalBottomSheet(
+                  context: context,
+                  backgroundColor: Colors.white,
+                  isDismissible: true,
+                  isScrollControlled: true,
+                  shape: const RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(25))),
+                  builder: (context) {
+                    return CommentsBottomSheet();
+                  },
+                ),
+              );
         },
         backgroundColor: Colors.white,
         label: const Text(

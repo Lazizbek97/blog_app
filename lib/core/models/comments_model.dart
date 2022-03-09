@@ -1,6 +1,3 @@
-// To parse this JSON data, do
-//
-//     final commentsModel = commentsModelFromJson(jsonString);
 
 import 'dart:convert';
 

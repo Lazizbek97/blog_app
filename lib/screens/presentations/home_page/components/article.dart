@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:work_task/core/utils/constants.dart';
 import 'package:work_task/core/utils/size_config.dart';
 import 'package:work_task/screens/providers/post_provider.dart';
 import 'package:work_task/screens/providers/user_provider.dart';
 
 class Article extends StatelessWidget {
-  Article({required this.userId, required this.title, required this.postID, Key? key})
+  Article(
+      {required this.userId,
+      required this.title,
+      required this.index,
+      required this.postID,
+      Key? key})
       : super(key: key);
 
   int postID;
   int userId;
+  int index;
   String title;
 
   @override
@@ -34,10 +41,10 @@ class Article extends StatelessWidget {
               width: getWidth(150),
               margin: EdgeInsets.only(right: getWidth(15)),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                image: const DecorationImage(
+                borderRadius: BorderRadius.circular(Constants.border_radius),
+                image:  DecorationImage(
                   fit: BoxFit.cover,
-                  image: NetworkImage("https://source.unsplash.com/random"),
+                  image: NetworkImage("https://source.unsplash.com/random/$index"),
                 ),
               ),
             ),

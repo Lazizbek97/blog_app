@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:work_task/core/data/local_data/writers_avatars.dart';
 import 'package:work_task/core/models/posts_model.dart';
 import 'package:work_task/core/models/users_model.dart';
 import 'package:work_task/core/services/posts_service.dart';
 import 'package:work_task/core/services/users_service.dart';
 import 'package:work_task/core/utils/size_config.dart';
 import 'package:work_task/screens/presentations/home_page/components/article.dart';
+import 'package:work_task/screens/presentations/home_page/components/avatar_shimmer.dart';
+import 'package:work_task/screens/presentations/home_page/components/post_shimmer.dart';
+import 'package:work_task/screens/presentations/home_page/components/writers_avatar_list.dart';
 import 'package:work_task/screens/providers/user_provider.dart';
 
 class MyHomePage extends StatelessWidget {
@@ -43,8 +45,10 @@ class MyHomePage extends StatelessWidget {
                   future: UserSerivce.fetchUser(),
                   builder: ((context, AsyncSnapshot<List<UserModel>> snapshot) {
                     if (!snapshot.hasData) {
-                      return const Center(
-                        child: CircularProgressIndicator.adaptive(),
+                      return ListView.builder(
+                        itemCount: 10,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) => const AvatarShimmer(),
                       );
                     } else if (snapshot.hasError) {
                       return const Center(
@@ -52,44 +56,7 @@ class MyHomePage extends StatelessWidget {
                       );
                     } else {
                       List<UserModel> users = snapshot.data!;
-                      return ListView.builder(
-                        itemCount: Avatars.pictures.length,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                            onTap: () {
-                              context.read<UserProvider>().changeUserId(
-                                  users[index].id!, users[index].name!);
-                            },
-                            child: Column(
-                              children: [
-                                Container(
-                                  height: getHeight(80),
-                                  width: getHeight(80),
-                                  margin: EdgeInsets.symmetric(
-                                      horizontal: getWidth(5)),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15),
-                                    image: DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image: AssetImage(
-                                        Avatars.pictures[index],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Text("User ID: ${users[index].id}"),
-                                const Text("Username:"),
-                                Text(
-                                  "${users[index].username}",
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      );
+                      return AvatarListView(users: users);
                     }
                   })),
             ),
@@ -103,9 +70,7 @@ class MyHomePage extends StatelessWidget {
                   future: PostsService.fetchPost(),
                   builder: ((context, AsyncSnapshot<List<PostModel>> snapshot) {
                     if (!snapshot.hasData) {
-                      return const Center(
-                        child: CircularProgressIndicator.adaptive(),
-                      );
+                      return const PostShimmer();
                     } else if (snapshot.hasError) {
                       return const Center(
                         child: Text("Somthing went wrong"),
@@ -124,6 +89,7 @@ class MyHomePage extends StatelessWidget {
                             userId: userPosts[index].userId!,
                             title: userPosts[index].title!,
                             postID: userPosts[index].id!,
+                            index: index,
                           );
                         },
                       );
