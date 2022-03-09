@@ -2,7 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:work_task/core/utils/size_config.dart';
 
 class Article extends StatelessWidget {
-  const Article({Key? key}) : super(key: key);
+  Article(
+      {required this.userId, required this.title, required this.body, Key? key})
+      : super(key: key);
+
+  int userId;
+  String title;
+  String body;
 
   @override
   Widget build(BuildContext context) {
@@ -31,11 +37,13 @@ class Article extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    const Text('10 mins read'),
+                    Text('User Id: $userId'),
                     Text(
-                      "Make design systems people want to use",
+                      title,
                       style: TextStyle(
                           fontSize: getHeight(16), fontWeight: FontWeight.w600),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
                     ),
                     Row(
                       children: [

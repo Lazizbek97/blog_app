@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:work_task/core/utils/main_theme.dart';
 import 'package:work_task/core/utils/router.dart';
+import 'package:work_task/screens/providers/user_provider.dart';
 
 void main() {
   runApp(MyApp());
@@ -11,12 +13,17 @@ class MyApp extends StatelessWidget {
   RouteGenerator routeGenerate = RouteGenerator();
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Blog App',
-      debugShowCheckedModeBanner: false,
-      theme: MainTheme.light,
-      initialRoute: '/',
-      onGenerateRoute: routeGenerate.routeGenerate,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => UserProvider()),
+      ],
+      child: MaterialApp(
+        title: 'Blog App',
+        debugShowCheckedModeBanner: false,
+        theme: MainTheme.light,
+        initialRoute: '/',
+        onGenerateRoute: routeGenerate.routeGenerate,
+      ),
     );
   }
 }
